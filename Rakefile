@@ -6,6 +6,7 @@ begin
     gs.summary  = "A light-weight web app for serving up a folder of markdown files"
     gs.email    = "myles@myles.id.au"
     gs.authors  = ["Myles Byrne"]
+    gs.add_dependency('rdiscount', '>=1.5.8')
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
