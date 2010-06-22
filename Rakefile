@@ -8,6 +8,7 @@ begin
     gs.authors  = ["Myles Byrne"]
     gs.require_path = '.'
     gs.add_dependency('rdiscount', '>=1.5.8')
+    gs.add_dependency('haml', '>=2.2.22')
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
