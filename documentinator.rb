@@ -27,7 +27,12 @@ helpers do
 
 end
 
-get '/' do
-  @doc = md File.read(settings.dir + '/index.md')
+get '/*' do |name|
+  name = 'index' if name.empty?
+  file = File.join(settings.dir + '/' + name + '.md')
+  not_found unless File.exist? file
+  @doc = md File.read(file)
   haml :doc
 end
+
+not_found { "404. Oh Noes!" }
