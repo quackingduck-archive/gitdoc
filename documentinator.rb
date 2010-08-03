@@ -30,9 +30,15 @@ end
 get '/*' do |name|
   name = 'index' if name.empty?
   file = File.join(settings.dir + '/' + name + '.md')
-  not_found unless File.exist? file
+  pass unless File.exist? file
   @doc = md File.read(file)
   haml :doc
+end
+
+get '/*.*' do |name,ext|
+  file = File.join(settings.dir + '/' + name + '.' + ext)
+  pass unless File.exist? file
+  send_file file
 end
 
 not_found { "404. Oh Noes!" }
