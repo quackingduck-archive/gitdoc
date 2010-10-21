@@ -3,11 +3,12 @@ require 'rdiscount'
 require 'haml'
 require 'sass'
 
-def Documentinator! title = nil
+def Documentinator! title = nil, opts = {}
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
   set :styles, dir + '/styles.sass'
   set :title, title
+  set :header, opts[:header]
   run Sinatra::Application
 end
 
