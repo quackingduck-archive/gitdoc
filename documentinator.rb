@@ -1,15 +1,19 @@
 require 'sinatra'
 require 'rdiscount'
+require 'haml'
+require 'sass'
 
-def Documentinator!
+def Documentinator! title = nil
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
   set :styles, dir + '/styles.sass'
+  set :title, title
   run Sinatra::Application
 end
 
 set :haml, {:format => :html5}
 set :views, lambda { root }
+disable :logging # the server always writes its own log anyway
 
 helpers do
 
@@ -26,6 +30,7 @@ helpers do
   end
 
 end
+
 
 get '/*' do |name|
   name = 'index' if name.empty?
