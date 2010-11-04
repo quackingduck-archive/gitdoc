@@ -3,7 +3,7 @@ require 'rdiscount'
 require 'haml'
 require 'sass'
 
-def Documentinator! title = nil, opts = {}
+def GitDoc! title = nil, opts = {}
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
   set :styles, dir + '/styles.sass'

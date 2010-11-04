@@ -1,8 +1,8 @@
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gs|
-    gs.name     = "documentinator"
-    gs.homepage = "http://github.com/quackingduck/documentinator"
+    gs.name     = "gitdoc"
+    gs.homepage = "http://github.com/quackingduck/gitdoc"
     gs.summary  = "A light-weight web app for serving up a folder of markdown files"
     gs.email    = "myles@myles.id.au"
     gs.authors  = ["Myles Byrne"]
