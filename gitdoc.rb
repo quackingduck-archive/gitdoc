@@ -69,15 +69,7 @@ helpers do
     end
   end
 
-  def styles
-    styles = sass(:reset)
-    styles += File.read(settings.root + '/highlight.css')
-    styles += sass(File.read(settings.styles)) if File.exist? settings.styles
-    styles
-  end
-
 end
-
 
 get '/*' do |name|
   name = 'index' if name.empty?
@@ -91,6 +83,14 @@ get '/*.*' do |name,ext|
   file = File.join(settings.dir + '/' + name + '.' + ext)
   pass unless File.exist? file
   send_file file
+end
+
+get '/.css' do
+  content_type :css
+  styles = sass(:reset)
+  styles += File.read(settings.root + '/highlight.css')
+  styles += sass(File.read(settings.styles)) if File.exist? settings.styles
+  styles
 end
 
 not_found { "404. Oh Noes!" }
