@@ -1,0 +1,91 @@
+body, pre, code
+  font-size: 14px
+  line-height: 20px
+  color: #333
+
+a
+  color: #333
+  text-decoration: underline
+
+h1, h2, h3, p, ul, ol, pre
+  margin: 20px 0
+
+h1,h2,h3
+  font-weight: bold
+
+// draws a block to the side to make long documents easier to scan and to
+// make it easier to recognise the heading level
+@mixin heading-hint ( $width)
+  position: relative
+  &:before
+    content: ''
+    display: block
+    width: $width
+    height: 10px
+    background: #e8e8e8
+    position: absolute
+    left: -15px - $width
+    top: 7px
+
+h1
+  font-size: 20px
+  @include heading-hint(30px)
+
+h2
+  font-size: 18px
+  @include heading-hint(25px)
+
+h3
+  font-size: 16px
+  @include heading-hint(20px)
+
+em
+  font-style: italic
+
+strong
+  font-weight: bold
+
+// GitDoc doesn't really support more than two levels of list nesting
+// If you have to do that you'll need to write your own styles
+
+li
+  margin: 10px 0
+
+li:before
+  float: left
+  margin-left: -44px
+  color: #666
+  width: 30px
+  text-align: right
+
+ul li:before
+  content: "*"
+  margin-top: 5px
+  font-size: 20px
+
+ul ul li:before
+  font-size: 15px
+  margin-top: 3px
+  margin-left: -45px
+  color: #999
+
+ol > li
+  counter-increment: ol-li
+ol li:before
+  content: counter(ol-li)
+
+ol ol li
+  counter-increment: ol-ol-li
+ol ol li:before
+  content: counter(ol-ol-li)
+
+ol ol li:before
+  font-size: 13px
+  color: #999
+
+ul ul, ol ol
+  margin: 0
+
+#doc
+  width: 600px
+  margin: 40px auto
