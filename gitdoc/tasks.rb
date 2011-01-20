@@ -1,6 +1,8 @@
 task :server do
-  exec 'unicorn -r bundler/setup'
+  exec 'unicorn'
 end
+
+task :default => :server
 
 task :dev do
   unless $LOAD_PATH.last =~ /gitdoc$/
