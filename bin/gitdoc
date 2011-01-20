@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+version = File.read(File.dirname(__FILE__)+'/../VERSION')
+
+unless ARGV == ['init']
+  puts "GitDoc version #{version}"
+  puts "Run with 'init' to make the current directory a GitDoc instance"
+  exit
+end
+
+if File.exists? 'config.ru'
+  abort "config.ru exists, is GitDoc already set up for this folder?"
+end
+
+config = <<-END
+require 'gitdoc'
+
+GitDoc!
+END
+
+rakefile = <<-END
+require 'bundler/setup' unless $LOAD_PATH.detect { |p| p =~ /gitdoc$/ }
+require 'gitdoc/tasks'
+END
+
+gemfile = <<-END
+source :rubygems
+gem 'gitdoc', '#{version}'
+END
+
+index = <<-END
+Welcome to GitDoc
+END
+
+File.open('config.ru','w') { |f| f.write config }
+File.open('Rakefile','w') { |f| f.write rakefile }
+File.open('Gemfile','w') { |f| f.write gemfile }
+
+system 'bundle install'
