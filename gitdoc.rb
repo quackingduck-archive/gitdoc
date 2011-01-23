@@ -2,7 +2,22 @@ require 'sinatra'
 require 'rdiscount'
 require 'haml'
 require 'sass'
-require 'digest/sha1'
+
+## The Public Interface
+#
+# To run gitdoc in a directory create a rackup file like this:
+#
+#     require 'gitdoc'
+#     GitDoc!
+#
+# Boom. There are also some optional arguments:
+#
+#     require 'gitdoc'
+#     GitDoc! "Title to use",
+#       :header => '<!-- this will appear before the </head> tag -->'
+#       # This turns off GitDoc's default css, you still get reset and code
+#       # highligting styles
+#       :default_styles => false
 
 def GitDoc! title = nil, opts = {}
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
@@ -14,11 +29,17 @@ def GitDoc! title = nil, opts = {}
   run Sinatra::Application
 end
 
+## The Implementation
+
 set :haml, {:format => :html5}
 set :views, lambda { root }
 disable :logging # the server always writes its own log anyway
 
 helpers do
+
+  ### Document Compiler
+
+  require 'digest/sha1'
 
   def md source
     source_without_code = extract_code source
