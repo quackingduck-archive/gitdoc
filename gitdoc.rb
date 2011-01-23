@@ -94,11 +94,22 @@ helpers do
 
   ### Coffee Compiler
 
-  require 'v8'
   require 'coffee-script'
 
   def coffee source
     CoffeeScript.compile source
+  end
+
+  ### HTML Extensions
+
+  def html source
+    compile_sass_tags source
+  end
+
+  def compile_sass_tags source
+    source.gsub(/^<style type=['"]?text\/sass['"]?>\r?\n(.+?)<\/style>?$/m) do |match|
+      "<style type='text/css'>\n#{sass $1}</style>"
+    end
   end
 
 end
@@ -128,7 +139,14 @@ end
 get '*.coffee.js' do |name|
   file = settings.dir + '/' + name + '.coffee'
   pass unless File.exist? file
-  coffee File.read file
+  coffee File.read(file)
+end
+
+# Extends html to support sass
+get '*.html' do |name|
+  file = settings.dir + '/' + name + '.html'
+  pass unless File.exist? file
+  html File.read(file)
 end
 
 # If the path matches any file in the directory then send that down
