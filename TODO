@@ -1,5 +1,6 @@
 * Open web browser after server launches
 * Less http logging
-* TomDoc the public API
 * A :scriptable option that supports script embedding and an /index.json call
 * Don't run the server on a port that's in use
+* Support ///cs syntax
+* running `gitdoc` launches gitdoc in current directory
