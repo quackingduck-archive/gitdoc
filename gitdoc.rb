@@ -92,6 +92,15 @@ helpers do
     end
   end
 
+  ### Coffee Compiler
+
+  require 'v8'
+  require 'coffee-script'
+
+  def coffee source
+    CoffeeScript.compile source
+  end
+
 end
 
 # If the path doesn't have a file extension and a matching GitDoc document
@@ -113,6 +122,13 @@ get '/.css' do
   custom_styles = settings.dir + '/styles.sass'
   styles += sass(File.read(custom_styles)) if File.exist? custom_styles
   styles
+end
+
+# If the corresponding .coffee file exists it is compiled and rendered
+get '*.coffee.js' do |name|
+  file = settings.dir + '/' + name + '.coffee'
+  pass unless File.exist? file
+  coffee File.read file
 end
 
 # If the path matches any file in the directory then send that down
