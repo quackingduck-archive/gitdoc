@@ -122,4 +122,12 @@ get '/*.*' do |name,ext|
   send_file file
 end
 
-not_found { "404. Oh Noes!" }
+not_found do
+  version = File.read(File.dirname(__FILE__)+'/VERSION')
+  @doc = md(
+    "# Not Found"+
+    "\n\n"+
+    "GitDoc version #{version}"
+  )
+  haml :doc
+end
