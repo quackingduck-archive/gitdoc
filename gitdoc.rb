@@ -42,7 +42,7 @@ helpers do
 
   # Compiles a GitDoc document (basically markdown with code highlighting)
   # into html
-  def md source
+  def gd source
     source_without_code = extract_code source
     html = RDiscount.new(source_without_code).to_html
     html = highlight_code html
@@ -100,7 +100,7 @@ get '/*' do |name|
   name = 'index' if name.empty?
   file = File.join(settings.dir + '/' + name + '.md')
   pass unless File.exist? file
-  @doc = md File.read(file)
+  @doc = gd File.read(file)
   haml :doc
 end
 
@@ -124,7 +124,7 @@ end
 
 not_found do
   version = File.read(File.dirname(__FILE__)+'/VERSION')
-  @doc = md(
+  @doc = gd(
     "# Not Found"+
     "\n\n"+
     "GitDoc version #{version}"
