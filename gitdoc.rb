@@ -41,6 +41,8 @@ helpers do
 
   require 'digest/sha1'
 
+  # Compiles a GitDoc document (basically markdown with code highlighting)
+  # into html
   def md source
     source_without_code = extract_code source
     html = RDiscount.new(source_without_code).to_html
@@ -48,7 +50,7 @@ helpers do
     newline_entities_for_tag :pre, html
   end
 
-  # extract_code and highlight_code cribbed from:
+  # `extract_code` and `highlight_code` based on:
   # https://github.com/github/gollum/blob/0b8bc597a7e9495b272e5dbb743827f56ccd2fe6/lib/gollum/markup.rb#L367
 
   # Replaces all code fragments with a SHA1 hash. Stores the original fragment
@@ -93,6 +95,8 @@ helpers do
 
 end
 
+# If the path doesn't have a file extension and a matching GitDoc document
+# exists then it is compiled and rendered
 get '/*' do |name|
   name = 'index' if name.empty?
   file = File.join(settings.dir + '/' + name + '.md')
@@ -101,12 +105,7 @@ get '/*' do |name|
   haml :doc
 end
 
-get '/*.*' do |name,ext|
-  file = File.join(settings.dir + '/' + name + '.' + ext)
-  pass unless File.exist? file
-  send_file file
-end
-
+# GitDoc document styles
 get '/.css' do
   content_type :css
   styles = sass(:reset)
@@ -114,6 +113,13 @@ get '/.css' do
   styles += sass(:default) if settings.default_styles?
   styles += sass(File.read(settings.styles)) if File.exist? settings.styles
   styles
+end
+
+# If the path matches any file in the directory then send that down
+get '/*.*' do |name,ext|
+  file = File.join(settings.dir + '/' + name + '.' + ext)
+  pass unless File.exist? file
+  send_file file
 end
 
 not_found { "404. Oh Noes!" }
