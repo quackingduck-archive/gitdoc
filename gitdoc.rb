@@ -22,7 +22,6 @@ require 'sass'
 def GitDoc! title = nil, opts = {}
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
-  set :styles, dir + '/styles.sass'
   set :title, title
   set :header, opts[:header]
   set :default_styles, opts[:default_styles] != false
@@ -111,7 +110,8 @@ get '/.css' do
   styles = sass(:reset)
   styles += File.read(settings.root + '/highlight.css')
   styles += sass(:default) if settings.default_styles?
-  styles += sass(File.read(settings.styles)) if File.exist? settings.styles
+  custom_styles = settings.dir + '/styles.sass'
+  styles += sass(File.read(custom_styles)) if File.exist? custom_styles
   styles
 end
 
