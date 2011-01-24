@@ -12,7 +12,6 @@ begin
     gs.add_dependency('sinatra', '~>1.0')
     gs.add_dependency('unicorn','~>3.1.0')
     gs.add_dependency('coffee-script', '~>2.1.1')
-    gs.add_dependency('therubyracer', '~>0.8.0') # v8 implementation
     gs.add_dependency('json','~>1.4.6') # dependency of coffee-script
   end
   Jeweler::GemcutterTasks.new
