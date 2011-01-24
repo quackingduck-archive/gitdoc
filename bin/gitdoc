@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-version = File.read(File.dirname(__FILE__)+'/../VERSION')
+version = File.read(File.dirname(__FILE__)+'/../VERSION').strip
 
 unless ARGV == ['init']
   puts "GitDoc version #{version}"
