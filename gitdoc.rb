@@ -102,8 +102,15 @@ helpers do
 
   ### HTML Extensions
 
-  def html source
-    compile_sass_tags source
+  def html extended_html
+    html = compile_sass_tags extended_html
+    compile_scss_tags html
+  end
+
+  def compile_scss_tags source
+    source.gsub(/^<style type=['"]?text\/scss['"]?>\r?\n(.+?)<\/style>?$/m) do |match|
+      "<style type='text/css'>\n#{scss $1}</style>"
+    end
   end
 
   def compile_sass_tags source
