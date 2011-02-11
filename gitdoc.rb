@@ -146,6 +146,7 @@ end
 get '*.coffee.js' do |name|
   file = settings.dir + '/' + name + '.coffee'
   pass unless File.exist? file
+  content_type :js
   coffee File.read(file)
 end
 
