@@ -158,7 +158,7 @@ get '*.html' do |name|
 end
 
 # If the path matches any file in the directory then send that down
-get '/*.*' do |name,ext|
+get '*.*' do |name,ext|
   file = File.join(settings.dir + '/' + name + '.' + ext)
   pass unless File.exist? file
   send_file file
