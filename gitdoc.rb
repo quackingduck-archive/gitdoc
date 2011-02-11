@@ -123,8 +123,8 @@ end
 
 # If the path doesn't have a file extension and a matching GitDoc document
 # exists then it is compiled and rendered
-get '/*' do |name|
-  name = 'index' if name.empty?
+get '*' do |name|
+  name += 'index' if name =~ /\/$/
   file = File.join(settings.dir + '/' + name + '.md')
   pass unless File.exist? file
   @doc = gd File.read(file)
