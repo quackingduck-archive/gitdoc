@@ -164,6 +164,11 @@ get '*.*' do |name,ext|
   send_file file
 end
 
+get '/favicon.ico' do
+  pass if File.exists? settings.dir + '/favicon.ico'
+  send_file settings.root + '/favicon.ico'
+end
+
 not_found do
   version = File.read(File.dirname(__FILE__)+'/VERSION')
   @doc = gd(
