@@ -1,3 +1,4 @@
+* Push the current path level into the load path for sass
 * Add nice horizontal scrollbars to code elements
 * Support inline coffee compilation in html
 * Open web browser after server launches
