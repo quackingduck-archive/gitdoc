@@ -157,6 +157,14 @@ get '*.html' do |name|
   html File.read(file)
 end
 
+get '*._plain' do |name|
+  file = settings.dir + '/' + name
+  pass unless File.exist? file
+  content_type :text
+  # html File.read(file)
+  File.read(file)
+end
+
 # If the path matches any file in the directory then send that down
 get '*.*' do |name,ext|
   file = File.join(settings.dir + '/' + name + '.' + ext)
