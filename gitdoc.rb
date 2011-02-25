@@ -102,9 +102,10 @@ helpers do
 
   ### HTML Extensions
 
-  def html extended_html
-    html = compile_sass_tags extended_html
-    compile_scss_tags html
+  def html html
+    html = compile_sass_tags html
+    html = compile_scss_tags html
+    compile_stylus_tags html
   end
 
   def compile_scss_tags source
