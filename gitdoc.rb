@@ -120,6 +120,24 @@ helpers do
     end
   end
 
+  def compile_stylus_tags source
+    source.gsub(/^<style type=['"]?text\/stylus['"]?>\r?\n(.+?)<\/style>?$/m) do |match|
+      "<style type='text/css'>\n#{stylus $1}</style>"
+    end
+  end
+
+  require 'shellwords'
+
+  # Hacked in. Requires node and the coffee and stylus npm packages installed
+  def stylus src
+    stylus_compiler = <<-COFFEE
+sys = require 'sys' ; stylus = require 'stylus'
+str = """\n#{src}\n"""
+stylus.render str, {}, (err,css) -> sys.puts css
+    COFFEE
+    `coffee --eval #{Shellwords.escape stylus_compiler}`.chomp
+  end
+
 end
 
 # If the path doesn't have a file extension and a matching GitDoc document
