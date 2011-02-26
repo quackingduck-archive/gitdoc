@@ -13,6 +13,7 @@ begin
     gs.add_dependency('unicorn','~>3.1.0')
     gs.add_dependency('coffee-script', '~>2.1.1')
     gs.add_dependency('json','~>1.4.6') # dependency of coffee-script
+    gs.add_dependency('livereload', '~>1.5')
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
