@@ -102,10 +102,10 @@ helpers do
 
   ### HTML Extensions
 
-  def html html
-    html = compile_sass_tags html
+  def html filename
+    html = compile_sass_tags File.read(filename)
     html = compile_scss_tags html
-    compile_stylus_tags html
+    compile_stylus_tags html, filename
   end
 
   def compile_scss_tags source
@@ -120,20 +120,20 @@ helpers do
     end
   end
 
-  def compile_stylus_tags source
+  def compile_stylus_tags source, filename
     source.gsub(/^<style type=['"]?text\/stylus['"]?>\r?\n(.+?)<\/style>?$/m) do |match|
-      "<style type='text/css'>\n#{stylus $1}</style>"
+      "<style type='text/css'>\n#{stylus $1, filename}</style>"
     end
   end
 
   require 'shellwords'
 
   # Hacked in. Requires node and the coffee and stylus npm packages installed
-  def stylus src
+  def stylus src, file
     stylus_compiler = <<-COFFEE
 sys = require 'sys' ; stylus = require 'stylus'
 str = """\n#{src}\n"""
-stylus.render str, {}, (err,css) -> sys.puts css
+stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
     COFFEE
     `coffee --eval #{Shellwords.escape stylus_compiler}`.chomp
   end
@@ -173,14 +173,13 @@ end
 get '*.html' do |name|
   file = settings.dir + '/' + name + '.html'
   pass unless File.exist? file
-  html File.read(file)
+  html file
 end
 
 get '*._plain' do |name|
   file = settings.dir + '/' + name
   pass unless File.exist? file
   content_type :text
-  # html File.read(file)
   File.read(file)
 end
 
