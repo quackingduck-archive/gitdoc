@@ -3,6 +3,25 @@ require 'rdiscount'
 require 'haml'
 require 'sass'
 
+module GitDoc
+  class Writer
+    def initialize app
+      @app = app
+    end
+    def call env
+      static_dir = @app.options.dir + '/build'
+      Dir.mkdir static_dir unless File.directory? static_dir
+      status, headers, response = @app.call(env)
+      if status == 200
+        file = File.join(static_dir, env['PATH_INFO'])
+        file = File.join(file,'index.html') if File.directory? file
+        File.open(file,'w') { |f| f.write response.to_s }
+      end
+      return [status, headers, response]
+    end
+  end
+end
+
 ## The Public Interface
 #
 # To run gitdoc in a directory create a rackup file like this:
@@ -14,7 +33,7 @@ require 'sass'
 #
 #     require 'gitdoc'
 #     GitDoc! "Title to use",
-#       :header => '<!-- this will appear before the </head> tag -->'
+#       :header => '<!-- this will appear before the </head> tag -->',
 #       # This turns off GitDoc's default css, you still get reset and code
 #       # highligting styles
 #       :default_styles => false
@@ -29,6 +48,8 @@ def GitDoc! title = nil, opts = {}
 end
 
 ## The Implementation
+
+use GitDoc::Writer
 
 set :haml, {:format => :html5}
 set :views, lambda { root }
@@ -143,11 +164,25 @@ end
 # If the path doesn't have a file extension and a matching GitDoc document
 # exists then it is compiled and rendered
 get '*' do |name|
-  name += 'index' if name =~ /\/$/
+  # name += 'index' if name =~ /\/$/
+  # name = 'index'
   file = File.join(settings.dir + '/' + name + '.md')
   pass unless File.exist? file
   @doc = gd File.read(file)
   haml :doc
+end
+
+get '*.html' do |name|
+  file = File.join(settings.dir, name + '.md')
+  puts file
+  if File.exist? file
+    @doc = gd File.read(file)
+    haml :doc
+  else
+    file = File.join(settings.dir, name + '.html')
+    pass unless File.exist? file
+    html file
+  end
 end
 
 # GitDoc document styles
@@ -169,13 +204,20 @@ get '*.coffee.js' do |name|
   coffee File.read(file)
 end
 
-# Extends html to support sass
-get '*.html' do |name|
-  file = settings.dir + '/' + name + '.html'
-  pass unless File.exist? file
-  html file
-end
+# # Extends html to support sass
+# get '*.html' do |name|
+#   name += 'index' if name =~ /\/$/
+#   file = File.join(settings.dir + '/' + name + '.md')
+#   pass unless File.exist? file
+#   @doc = gd File.read(file)
+#   haml :doc
+#
+#   # file = settings.dir + '/' + name + '.html'
+#   # pass unless File.exist? file
+#   # html file
+# end
 
+# TODO: deprecate
 get '*._plain' do |name|
   file = settings.dir + '/' + name
   pass unless File.exist? file
