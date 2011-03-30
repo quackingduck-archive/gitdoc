@@ -3,19 +3,30 @@ require 'rdiscount'
 require 'haml'
 require 'sass'
 
+
 module GitDoc
   class Writer
     def initialize app
       @app = app
     end
     def call env
-      static_dir = @app.options.dir + '/build'
-      Dir.mkdir static_dir unless File.directory? static_dir
+      build_dir = @app.options.dir + '/build'
+      FileUtils.mkdir_p build_dir
       status, headers, response = @app.call(env)
-      if status == 200
-        file = File.join(static_dir, env['PATH_INFO'])
-        file = File.join(file,'index.html') if File.directory? file
-        File.open(file,'w') { |f| f.write response.to_s }
+      # ugly
+      if status == 200 && env['PATH_INFO'] !~ /__sinatra__/
+        path = File.join(build_dir, env['PATH_INFO'])
+        # TODO: create dir of everthing before [^\/]+
+        FileUtils.mkdir_p path if path =~ /\/$/
+
+        # eg. /foo/bar/
+        if path =~ /\/$/
+          path = File.join(path,'index.html')
+        # eg. /foo/bar/baz
+        elsif path =~ /\/[^\/]+$/
+          path += '.html'
+        end
+        File.open(path,'w') { |f| f.write response.to_s }
       end
       return [status, headers, response]
     end
@@ -164,7 +175,7 @@ end
 # If the path doesn't have a file extension and a matching GitDoc document
 # exists then it is compiled and rendered
 get '*' do |name|
-  # name += 'index' if name =~ /\/$/
+  name += 'index' if name =~ /\/$/
   # name = 'index'
   file = File.join(settings.dir + '/' + name + '.md')
   pass unless File.exist? file
