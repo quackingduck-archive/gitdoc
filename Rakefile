@@ -7,3 +7,7 @@ task :install do
   sh 'mv *.gem pkg/'
   sh "gem install -l #{gemfile}"
 end
+
+task :tag do
+  sh "git tag -a v`cat VERSION` `git rev-parse HEAD` -m ''"
+end
