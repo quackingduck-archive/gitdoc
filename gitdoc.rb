@@ -138,6 +138,16 @@ stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
     `coffee --eval #{Shellwords.escape stylus_compiler}`.chomp
   end
 
+  # Custom templates
+
+  def custom_body?
+    File.exists? settings.dir + '/body.haml'
+  end
+
+  def custom_body
+    haml File.read(settings.dir + '/body.haml')
+  end
+
 end
 
 # If the path doesn't have a file extension and a matching GitDoc document

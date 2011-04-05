@@ -4,4 +4,8 @@
   %meta{:charset => "utf-8"}
   %link{:rel => :stylesheet, :href => '/.css'}
   = settings.header
-#doc!= @doc
+
+- if custom_body?
+  = custom_body
+- else
+  #doc!= @doc
