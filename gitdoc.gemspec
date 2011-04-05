@@ -1,8 +1,6 @@
-require './gitdoc/version'
-
 Gem::Specification.new do |gs|
   gs.name     = "gitdoc"
-  gs.version  = GitDoc::VERSION
+  gs.version  = File.read(File.dirname(__FILE__)+'/VERSION')
   gs.homepage = "http://github.com/quackingduck/gitdoc"
   gs.summary  = "A light-weight web app for serving up a folder of markdown files"
   gs.email    = "myles@myles.id.au"
