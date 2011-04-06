@@ -7,7 +7,7 @@ Gem::Specification.new do |gs|
   gs.author   = "Myles Byrne"
   gs.require_path = '.'
 
-  gs.extra_rdoc_files = ["README.md", "TODO"]
+  gs.extra_rdoc_files = ["README.md"]
 
   gs.files = Dir['**/**/*']
 
