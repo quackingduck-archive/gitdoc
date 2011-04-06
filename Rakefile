@@ -1,5 +1,5 @@
 def gemfile
-  Dir['pkg/*'].sort.first
+  Dir['pkg/*'].sort.last
 end
 
 task :install do
