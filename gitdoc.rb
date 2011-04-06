@@ -30,6 +30,8 @@ end
 
 ## The Implementation
 
+GitDoc = Sinatra::Application
+
 set :haml, :format => :html5
 set :views, lambda { root }
 disable :logging # the server always writes its own log anyway
