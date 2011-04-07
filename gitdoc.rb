@@ -45,10 +45,26 @@ helpers do
   # Compiles a GitDoc document (basically markdown with code highlighting)
   # into html
   def gd source
-    source_without_code = extract_code source
-    html = RDiscount.new(source_without_code).to_html
+    html = extract_code source
+    html = process_haml html
+    html = extract_styles html
+    html = RDiscount.new(html).to_html
     html = highlight_code html
     newline_entities_for_tag :pre, html
+  end
+
+  def process_haml source
+    # only supports single lines atm
+    source.gsub %r{///\s*haml\s*(.+)?$} do
+      haml $1
+    end
+  end
+
+  def extract_styles source
+    # only suppors css atm, also a dirty hack
+    source.gsub(/^<style\s?(?:type=['"]?text\/css['"])?>\r?\n(.+?)<\/style>?$/m) do |match|
+      "<div><style type='text/css'>\n#{scss $1}</style></div>"
+    end
   end
 
   # `extract_code` and `highlight_code` based on:
