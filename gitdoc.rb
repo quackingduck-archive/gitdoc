@@ -188,7 +188,15 @@ get '*.html' do |name|
   html file
 end
 
+# Deprecated
 get '*._plain' do |name|
+  file = settings.dir + '/' + name
+  pass unless File.exist? file
+  content_type :text
+  File.read(file)
+end
+
+get '*.txt' do |name|
   file = settings.dir + '/' + name
   pass unless File.exist? file
   content_type :text
