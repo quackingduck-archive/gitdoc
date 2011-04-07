@@ -11,3 +11,7 @@ end
 task :tag do
   sh "git tag -a v`cat VERSION` `git rev-parse HEAD` -m ''"
 end
+
+task :release do
+  sh "gem push #{gemfile}"
+end
