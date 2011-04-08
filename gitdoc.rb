@@ -5,26 +5,23 @@ require 'sass'
 
 ## The Public Interface
 #
-# To run gitdoc in a directory create a rackup file like this:
+# A rackup file with just these two lines:
 #
 #     require 'gitdoc'
 #     GitDoc!
 #
-# Boom. There are also some optional arguments:
+# is all thats required to serve up the directory.
+#
+# GitDoc is a Sinatra app so you can customize it like one:
 #
 #     require 'gitdoc'
-#     GitDoc! "Title to use",
-#       :header => '<!-- this will appear before the </head> tag -->'
-#       # This turns off GitDoc's default css, you still get reset and code
-#       # highligting styles
-#       :default_styles => false
+#     GitDoc.set :title, "My Documents"
+#     GitDoc.disable :default_styles
+#     GitDoc!
 
-def GitDoc! title = nil, opts = {}
+def GitDoc!
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
-  set :title, title
-  set :header, opts[:header]
-  set :default_styles, opts[:default_styles] != false
   run Sinatra::Application
 end
 
@@ -166,20 +163,24 @@ stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
     haml File.read(settings.dir + '/body.haml')
   end
 
+  def title
+    settings.title || 'Documents'
+  end
+
 end
 
 # If the path doesn't have a file extension and a matching GitDoc document
 # exists then it is compiled and rendered
 get '*' do |name|
   name += 'index' if name =~ /\/$/
-  file = File.join(settings.dir + '/' + name + '.md')
-  pass unless File.exist? file
-  @doc = gd File.read(file)
+  @file = File.join(settings.dir + '/' + name + '.md')
+  pass unless File.exist? @file
+  @doc = gd File.read(@file)
   haml :doc
 end
 
 # GitDoc document styles
-get '/.css' do
+get '/gitdoc.css' do
   content_type :css
   styles = sass(:reset)
   styles += File.read(settings.root + '/highlight.css')
@@ -202,14 +203,6 @@ get '*.html' do |name|
   file = settings.dir + '/' + name + '.html'
   pass unless File.exist? file
   html file
-end
-
-# Deprecated
-get '*._plain' do |name|
-  file = settings.dir + '/' + name
-  pass unless File.exist? file
-  content_type :text
-  File.read(file)
 end
 
 get '*.txt' do |name|

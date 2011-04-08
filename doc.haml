@@ -1,9 +1,9 @@
 !!!
 %head
-  %title= settings.title || 'Documents'
+  %title= title
   %meta{:charset => "utf-8"}
-  %link{:rel => :stylesheet, :href => '/.css'}
-  = settings.header
+  %link{:rel => :stylesheet, :href => '/gitdoc.css'}
+  = header
 
 - if custom_body?
   = custom_body
