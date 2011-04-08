@@ -29,6 +29,9 @@ end
 
 GitDoc = Sinatra::Application
 
+require 'gitdoc/response_cache'
+use GitDoc::ResponseCache, 'build'
+
 set :haml, :format => :html5
 set :views, lambda { root }
 disable :logging # the server always writes its own log anyway
