@@ -14,8 +14,6 @@ Gem::Specification.new do |gs|
   gs.add_dependency 'rdiscount', '~>1.5.8'
   gs.add_dependency 'haml', '~>3.0.25'
   gs.add_dependency 'sinatra', '~>1.0'
-  gs.add_dependency 'unicorn','~>3.1.0'
   gs.add_dependency 'coffee-script', '~>2.1.1'
   gs.add_dependency 'json','~>1.4.6' # dependency of coffee-script
-  gs.add_dependency 'livereload', '~>1.5'
 end
