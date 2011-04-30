@@ -3,7 +3,7 @@ require 'rdiscount'
 require 'haml'
 require 'sass'
 
-## The Public Interface
+## Public Interface
 #
 # A rackup file with just these two lines:
 #
@@ -15,26 +15,29 @@ require 'sass'
 # GitDoc is a Sinatra app so you can customize it like one:
 #
 #     require 'gitdoc'
-#     GitDoc.set :title, "My Documents"
+#     GitDoc.enable :compiler
 #     GitDoc.disable :default_styles
+#     GitDoc.set :title, "My Documents"
 #     GitDoc!
+
+GitDoc = Sinatra::Application
 
 def GitDoc!
   dir = File.dirname(File.expand_path(caller.first.split(':').first))
   set :dir, dir
-  run Sinatra::Application
+  if settings.compiler
+    require 'gitdoc/response_cache'
+    use GitDoc::ResponseCache, 'build'
+  end
+  run GitDoc
 end
 
-## The Implementation
-
-GitDoc = Sinatra::Application
-
-require 'gitdoc/response_cache'
-use GitDoc::ResponseCache, 'build'
+## Implementation
 
 set :haml, :format => :html5
 set :views, lambda { root }
 disable :logging # the server always writes its own log anyway
+disable :compiler
 
 helpers do
 
