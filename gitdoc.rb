@@ -175,8 +175,82 @@ stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
 
 end
 
-# If the path doesn't have a file extension and a matching GitDoc document
-# exists then it is compiled and rendered
+# Compiles stylus to css
+module Stylus
+  extend self
+
+  # TODO: line number matching, raise errors through the stack
+  def compile source, file
+    # Requires node and the coffee and stylus npm packages installed
+    stylus_compiler = <<-COFFEE
+sys = require 'sys' ; stylus = require 'stylus'
+str = """\n#{source}\n"""
+stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
+COFFEE
+    `coffee --eval #{Shellwords.escape stylus_compiler}`.rstrip
+  end
+end
+
+# TODO: remove the CoffeeScript dependency and just use this
+module GitDoc::CoffeeScript
+  extend self
+
+  # TODO: line number matching, raise errors through the stack
+  def compile source, file = nil
+    `coffee --print --eval #{Shellwords.escape source}`.rstrip
+  end
+end
+
+# Compiles an extended coffeescript format into html
+module CoffeePage
+  extend self
+
+  def compile source, file
+    source = extract_requires source
+    source = extract_stylus source, file
+   ['<html>',
+    '<head>',
+    requires,
+    stylus,
+    '</head>',
+    '<body>',
+    '<script>',
+    GitDoc::CoffeeScript.compile(source),
+    '</script>',
+    '</body>'].flatten.join "\n"
+  end
+
+  def extract_requires source
+    @requires = []
+    source.gsub(/^\#\#\#[ ]*~[ ]*require[ ]*\n(.+?)\#\#\#\n?$/m) do
+      $1.split("\n").map(&:strip).each do |path|
+        @requires << path unless path.empty?
+      end
+      ''
+    end
+  end
+
+  def extract_stylus source, file
+    @stylus = []
+    source.gsub(/^\#\#\#[ ]*~[ ]*stylus[ ]*\n(.+?)\#\#\#\n?$/m) do
+      @stylus << Stylus.compile($1, file)
+      ''
+    end
+  end
+
+  def requires
+    @requires.map do |path|
+      "<script src='#{path}'></script>"
+    end.join "\n"
+  end
+
+  def stylus
+    ['<style>',@stylus.join("\n"),'</style>'].join("\n") unless @stylus.empty?
+  end
+
+end
+
+# Renders an extended markdown page wrapped in the GitDoc html
 get '*' do |name|
   name += 'index' if name =~ /\/$/
   file = settings.dir + name + '.md'
@@ -185,12 +259,19 @@ get '*' do |name|
   haml :doc
 end
 
-# If the path doesn't have a file extension or the extension is .html and a
-# matching html file exists then process it with the extended html compiler
+# Renders and extended html page without any additional wrapping
 get %r{(.*?)(\.html)?$} do |name,extension|
   file = settings.dir + name + (extension || '.html')
   pass unless File.exist? file
   html file
+end
+
+# Renders a .cspage as html
+get '*' do |name|
+  file = settings.dir + name + '.cspage'
+  pass unless File.exist? file
+  content_type :html
+  CoffeePage.compile File.read(file), file
 end
 
 # GitDoc document styles
