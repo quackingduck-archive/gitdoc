@@ -27,7 +27,7 @@ def GitDoc!
   set :dir, dir
   if settings.compiler
     require 'gitdoc/response_cache'
-    use GitDoc::ResponseCache, 'build'
+    use GitDoc::ResponseCache, File.join(dir,'build')
   end
   run GitDoc
 end
