@@ -185,6 +185,14 @@ get '*' do |name|
   haml :doc
 end
 
+# If the path doesn't have a file extension or the extension is .html and a
+# matching html file exists then process it with the extended html compiler
+get %r{(.*?)(\.html)?$} do |name,extension|
+  file = settings.dir + name + (extension || '.html')
+  pass unless File.exist? file
+  html file
+end
+
 # GitDoc document styles
 get '/gitdoc.css' do
   content_type :css
@@ -202,13 +210,6 @@ get '*.coffee.js' do |name|
   pass unless File.exist? file
   content_type :js
   coffee File.read(file)
-end
-
-# Extends html to support sass
-get '*.html' do |name|
-  file = settings.dir + '/' + name + '.html'
-  pass unless File.exist? file
-  html file
 end
 
 get '*.txt' do |name|
