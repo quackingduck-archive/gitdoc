@@ -170,7 +170,7 @@ stylus.render str, {paths: ['#{File.dirname file}']}, (err,css) -> sys.puts css
   end
 
   def title
-    settings.title || 'Documents'
+    @title || settings.title || 'Documents'
   end
 
 end
@@ -233,8 +233,9 @@ end
 
 not_found do
   version = File.read(File.dirname(__FILE__)+'/VERSION')
+  @title = "Not Found"
   @doc = gd(
-    "# Not Found"+
+    "# #{@title}"+
     "\n\n"+
     "GitDoc version #{version}"
   )
