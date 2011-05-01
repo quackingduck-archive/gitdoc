@@ -179,9 +179,9 @@ end
 # exists then it is compiled and rendered
 get '*' do |name|
   name += 'index' if name =~ /\/$/
-  @file = File.join(settings.dir + '/' + name + '.md')
-  pass unless File.exist? @file
-  @doc = gd File.read(@file)
+  file = settings.dir + name + '.md'
+  pass unless File.exist? file
+  @doc = gd File.read(file)
   haml :doc
 end
 
