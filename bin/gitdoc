@@ -13,13 +13,14 @@ if File.exists? 'config.ru'
 end
 
 config = <<-END
+require 'bundler/setup' if $LOAD_PATH.grep(/gitdoc$/).empty?
 require 'gitdoc'
 
 GitDoc!
 END
 
 rakefile = <<-END
-require 'bundler/setup' unless $LOAD_PATH.last =~ /gitdoc$/
+require 'bundler/setup' if $LOAD_PATH.grep(/gitdoc$/).empty?
 require 'gitdoc/tasks'
 END
 
