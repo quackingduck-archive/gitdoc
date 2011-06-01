@@ -29,6 +29,10 @@ source :rubygems
 gem 'gitdoc', '#{version}'
 END
 
+powrc = <<-END
+export RUBYOPT="rubygems"
+END
+
 index = <<-END
 Welcome to GitDoc
 END
@@ -36,5 +40,6 @@ END
 File.open('config.ru','w') { |f| f.write config }
 File.open('Rakefile','w') { |f| f.write rakefile }
 File.open('Gemfile','w') { |f| f.write gemfile }
+File.open('.powrc','w') { |f| f.write powrc }
 
 system 'bundle install'
