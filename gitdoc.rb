@@ -268,7 +268,7 @@ end
 
 # Renders a .cspage as html
 get '*' do |name|
-  file = settings.dir + name + '.cspage'
+  file = settings.dir + name + '.cspage.coffee'
   pass unless File.exist? file
   content_type :html
   CoffeePage.compile File.read(file), file
