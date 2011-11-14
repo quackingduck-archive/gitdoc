@@ -25,7 +25,7 @@ Simplicity in the sense that the smallest GitDoc instance contains 4 files: `con
 
 Stability in the sense that you should be able to come back to a GitDoc instance 15 months later, type `rake` and see the content without too much fiddling with technology.
 
-There are literally hundreds of 'similar' projects to GitDoc. A couple that I like are:
+There are literally hundreds of similar projects to GitDoc. A couple that I like are:
 
 * [Gollum](https://github.com/github/gollum) - If you don't mind waiting after you've committed your changes to see them rendered then this thing is pretty cool. Power's the GitHub wikis.
 * [Brochure](https://github.com/sstephenson/brochure) - Supports partials and pages can be written in any [Tilt](https://github.com/rtomayko/tilt) based template language.
